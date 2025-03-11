@@ -5,7 +5,7 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
 
-  const url = "http://todoserverside.azurewebsites.net/todos";
+  const url = "https://todoserverside.azurewebsites.net/todos";
 
   useEffect(() => {
     axios.get(url).then((res) => setTodos(res.data));
