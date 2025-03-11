@@ -5,19 +5,21 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
 
+  const url = "http://localhost:5000/todos";
+
   useEffect(() => {
-    axios.get("http://localhost:5000/todos").then((res) => setTodos(res.data));
+    axios.get(url).then((res) => setTodos(res.data));
   }, []);
 
   const addTodo = async () => {
     if (!task) return;
-    const res = await axios.post("http://localhost:5000/todos", { task });
+    const res = await axios.post(url, { task });
     setTodos([...todos, res.data]);
     setTask("");
   };
 
   const toggleComplete = async (id, completed) => {
-    await axios.put(`http://localhost:5000/todos/${id}`, {
+    await axios.put(`${url}/${id}`, {
       completed: !completed,
     });
     setTodos(
@@ -28,7 +30,7 @@ function App() {
   };
 
   const deleteTodo = async (id) => {
-    await axios.delete(`http://localhost:5000/todos/${id}`);
+    await axios.delete(`${url}/${id}`);
     setTodos(todos.filter((todo) => todo._id !== id));
   };
 
