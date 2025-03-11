@@ -10,8 +10,15 @@ function App() {
   useEffect(() => {
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setTodos(data))
-      .catch((err) => console.error("Error fetching todos:", err));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setTodos(data);
+        } else {
+          console.error("API response is not an array:", data);
+          setTodos([]); // Set an empty array to avoid errors
+        }
+      })
+      .catch((error) => console.error("Error fetching todos:", error));
   }, []);
 
   const addTodo = async () => {
