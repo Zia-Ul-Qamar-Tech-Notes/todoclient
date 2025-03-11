@@ -1,37 +1,63 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
 
   const url = "https://todoserverside.azurewebsites.net/todos";
+  // const url = "http://localhost:5000/todos";
 
   useEffect(() => {
-    axios.get(url).then((res) => setTodos(res.data));
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setTodos(data))
+      .catch((err) => console.error("Error fetching todos:", err));
   }, []);
 
   const addTodo = async () => {
     if (!task) return;
-    const res = await axios.post(url, { task });
-    setTodos([...todos, res.data]);
-    setTask("");
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ task }),
+      });
+      const newTodo = await res.json();
+      setTodos([...todos, newTodo]);
+      setTask("");
+    } catch (err) {
+      console.error("Error adding todo:", err);
+    }
   };
 
   const toggleComplete = async (id, completed) => {
-    await axios.put(`${url}/${id}`, {
-      completed: !completed,
-    });
-    setTodos(
-      todos.map((todo) =>
-        todo._id === id ? { ...todo, completed: !completed } : todo
-      )
-    );
+    try {
+      await fetch(`${url}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed: !completed }),
+      });
+      setTodos(
+        todos.map((todo) =>
+          todo._id === id ? { ...todo, completed: !completed } : todo
+        )
+      );
+    } catch (err) {
+      console.error("Error updating todo:", err);
+    }
   };
 
   const deleteTodo = async (id) => {
-    await axios.delete(`${url}/${id}`);
-    setTodos(todos.filter((todo) => todo._id !== id));
+    try {
+      await fetch(`${url}/${id}`, { method: "DELETE" });
+      setTodos(todos.filter((todo) => todo._id !== id));
+    } catch (err) {
+      console.error("Error deleting todo:", err);
+    }
   };
 
   return (
