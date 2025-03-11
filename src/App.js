@@ -4,7 +4,7 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
 
-  const url = "https://todoserverside.azurewebsites.net/";
+  const url = "https://todoserverside.azurewebsites.net/todos";
   // const url = "http://localhost:5000/todos";
 
   useEffect(() => {
